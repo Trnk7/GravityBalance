@@ -1,4 +1,4 @@
-package com.example.cnv
+package com.example.gravityBalls
 
 import org.junit.Test
 

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.cnv"
+    namespace = "com.example.gravityBalls"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.cnv"
+        applicationId = "com.example.GravityBalls"
         minSdk = 29
         targetSdk = 36
         versionCode = 1

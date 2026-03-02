@@ -1,4 +1,4 @@
-package com.example.cnv
+package com.example.gravityBalls
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -15,9 +15,9 @@ class Ball(var x: Float, var y: Float) {
 
     private val slop=0.5f
 
-    private val fric=0.9f
+    private val friction=0.9f
     private val percent=0.2f
-    private var res=0.9f
+    private var restitution=0.9f
     private var dx = 0f
     private var dy = 0f
 
@@ -44,21 +44,21 @@ class Ball(var x: Float, var y: Float) {
         if(abs(dy) <gravityY) dy=0f
     }
 
-    fun draw(cnv: Canvas) {
+    fun draw(gravityBalls: Canvas) {
         paint.color = clr
-        cnv.drawCircle(x, y, r, paint)
+        gravityBalls.drawCircle(x, y, r, paint)
     }
 
     fun collide(other: Ball){
-        val distx = other.x-x
-        val disty = other.y-y
-        val distance = sqrt((distx * distx + disty * disty).toDouble()).toFloat()
+        val distX = other.x-x
+        val distY = other.y-y
+        val distance = sqrt((distX * distX + distY * distY).toDouble()).toFloat()
         if(distance<=r+other.r){
             val overlap = maxOf((r + other.r - distance)-slop,0f)/(mass+other.mass)*percent
 
 
-            val nx = distx/distance
-            val ny = disty/distance
+            val nx = distX/distance
+            val ny = distY/distance
 
             x-=nx*overlap*other.mass
             y-=ny*overlap*other.mass
@@ -69,9 +69,9 @@ class Ball(var x: Float, var y: Float) {
             val dvy = other.dy-dy
 
             val impSpeed=dvx*nx+dvy*ny
-            res = if(abs(impSpeed)>2) 0.5f else 0f
+            restitution = if(abs(impSpeed)>2) 0.5f else 0f
             if(impSpeed>-0.5f) return
-            val imp=((1+res)*impSpeed)/(mass+other.mass)
+            val imp=((1+restitution)*impSpeed)/(mass+other.mass)
             dx+=imp*other.mass*nx
             dy+=imp*other.mass*ny
             other.dx-=imp*mass*nx
@@ -85,12 +85,12 @@ class Ball(var x: Float, var y: Float) {
 
         val vel = dx*nx+dy*ny
         if(vel<0f){
-            val ress = if(abs(vel)>2)  res else 0f
-            dx-=(1+ress)*vel*nx
-            dy-=(1+ress)*vel*ny
+            val res = if(abs(vel)>2)  restitution else 0f
+            dx-=(1+res)*vel*nx
+            dy-=(1+res)*vel*ny
 
-            dx-=(dx*-ny+dy*nx)*(1-fric)*(-ny)
-            dy-=(dx*ny+dy*nx)*(1-fric)*(nx)
+            dx-=(dx*-ny+dy*nx)*(1-friction)*(-ny)
+            dy-=(dx*ny+dy*nx)*(1-friction)*(nx)
         }
     }
 }

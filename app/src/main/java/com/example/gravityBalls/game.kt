@@ -1,4 +1,4 @@
-package com.example.cnv
+package com.example.gravityBalls
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,7 +23,7 @@ class GameView(context: Context): View(context), Runnable, SensorEventListener {
 
     private val sensorMngr = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val sensor = sensorMngr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
+    private val sensitivity=0.5f
     var gX=0f
     var gY=0f
 
@@ -63,10 +63,10 @@ class GameView(context: Context): View(context), Runnable, SensorEventListener {
         }
     }
 
-    override fun onDraw(cnv: Canvas) {
-        super.onDraw(cnv)
-        cnv.drawColor(Color.WHITE) // Clear screen with white
-        balls.forEach { ball -> ball.draw(cnv) }
+    override fun onDraw(gravityBalls: Canvas) {
+        super.onDraw(gravityBalls)
+        gravityBalls.drawColor(Color.WHITE) // Clear screen with white
+        balls.forEach { ball -> ball.draw(gravityBalls) }
     }
 
     fun start() {
@@ -105,8 +105,8 @@ class GameView(context: Context): View(context), Runnable, SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
-            gX = event.values[0]*0.3f
-            gY = event.values[1]*0.3f
+            gX = event.values[0]*sensitivity
+            gY = event.values[1]*sensitivity
 
         }
     }
