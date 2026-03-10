@@ -1,5 +1,6 @@
 package com.example.gravityBalls
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -7,13 +8,19 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorManager
 import android.hardware.SensorEventListener
-import android.util.Log
 import android.view.View
 
-class GameView(
-    context: Context,
+@SuppressLint("ViewConstructor")
+class GameView : View, Runnable, SensorEventListener {
+
     private val listener: OnGameOverListener
-) : View(context), Runnable, SensorEventListener {
+
+    constructor(context: Context, listener: OnGameOverListener) : super(context) {
+        this.listener = listener
+        this.sensorMgr = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        this.sensor = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        this.ball = Ball()
+    }
 
     interface OnGameOverListener {
         fun onGameOver(score: Int)
@@ -21,12 +28,12 @@ class GameView(
 
     private var thr: Thread? = null
     private var running = false
-    private val sensorMgr = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val sensor = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+    private val sensorMgr: SensorManager
+    private val sensor: Sensor?
     private val sensitivity=0.5f
     var gX=0f
     var gY=0f
-    var ball: Ball=Ball()
+    var ball: Ball
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         ball.x=w/2f
@@ -48,12 +55,10 @@ class GameView(
         }
     }
     private fun update() {
-        val isRunning = ball.update(width.toFloat(), height.toFloat(),gX,gY)
+        ball.update(width.toFloat(), height.toFloat(),gX,gY)
 
-        if(isRunning==1){
-            Log.d("game OVer","gameeeee")
+        if(ball.gameOver){
             stop()
-            // Ensure UI work (starting an Activity) runs on the main thread.
             post {
                 listener.onGameOver(ball.score)
             }
@@ -91,8 +96,10 @@ class GameView(
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
-            gX = event.values[0]*sensitivity*0.5f
-            gY = event.values[1]*sensitivity*0.5f
+
+            gX = event.values[0]*sensitivity
+            gY = event.values[1]*sensitivity
+
         }
     }
    

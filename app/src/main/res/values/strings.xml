@@ -1,4 +1,9 @@
 <resources>
-    <string name="app_name">GravityBalls</string>
-    <string name="next">next</string>
+    <string name="app_name"><b>Gravity Balance</b></string>
+    <string name="play">PLAY</string>
+    <string name="subtitle">How steady are your hands?</string>
+    <string name="instruction">Tilt your phone to control the ball.\nAvoid touching the edges.\nThe longer you survive,\nthe better your hand stability.</string>
+    <string name="play_again">Play Again</string>
+    <string name="score">Score: %1$d</string>
+    <string name="game_over">Game Over</string>
 </resources>
